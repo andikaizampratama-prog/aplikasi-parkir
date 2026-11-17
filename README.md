@@ -1,58 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SISTEM INFORMASI PARKIRKU
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. Deskripsi Program
+ParkirKu adalah aplikasi berbasis web yang digunakan untuk membantu pengelolaan parkir kendaraan. Aplikasi ini dikembangkan menggunakan Laravel 13, PHP, dan MySQL.
 
-## About Laravel
+Sistem ini bertujuan mempermudah proses pencatatan kendaraan masuk dan keluar, pengelolaan tarif parkir, transaksi pembayaran, serta pembuatan laporan parkir.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 2. Tujuan Program
+- Mempermudah pengelolaan data parkir.
+- Mencatat kendaraan masuk dan keluar.
+- Mengelola transaksi pembayaran parkir.
+- Mempermudah pemantauan kapasitas parkir.
+- Menyediakan laporan transaksi parkir.
+- Meningkatkan ketertiban administrasi parkir.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 3. Teknologi yang Digunakan
+- **Bahasa pemrograman:** PHP
+- **Framework:** Laravel 13
+- **Database:** MySQL
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap
+- **Code Editor:** Visual Studio Code
+- **Version Control:** Git dan GitHub
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 4. Hak Akses Pengguna
 
-## Learning Laravel
+### Admin
+- Mengelola data anggota.
+- Mengelola data kendaraan.
+- Mengelola data parkir.
+- Mengelola tarif parkir.
+- Memvalidasi transaksi.
+- Melihat laporan.
+- Melihat log aktivitas.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Petugas
+- Mencatat kendaraan masuk.
+- Mencatat kendaraan keluar.
+- Mengelola proses parkir.
+- Mencetak tiket parkir.
+- Melihat notifikasi.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Owner
+- Melihat dashboard.
+- Melihat laporan parkir.
+- Melihat rekap transaksi.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 5. Fitur Program
+1. Login dan logout.
+2. Dashboard berdasarkan hak akses.
+3. Manajemen data anggota.
+4. Manajemen data kendaraan.
+5. Pengelolaan parkir.
+6. Pengaturan tarif parkir.
+7. Pencatatan transaksi.
+8. Validasi pembayaran.
+9. Cetak tiket parkir dengan QR Code.
+10. Notifikasi.
+11. Laporan parkir.
+12. Log aktivitas pengguna.
 
-## Agentic Development
+## 6. Struktur Folder Laravel
+- `app/` — Menyimpan Model dan Controller.
+- `bootstrap/` — Konfigurasi awal aplikasi.
+- `config/` — Konfigurasi aplikasi.
+- `database/` — Migration, Seeder, dan Factory.
+- `public/` — File publik aplikasi.
+- `resources/` — File View, CSS, dan JavaScript.
+- `routes/` — Pengaturan URL aplikasi.
+- `storage/` — Penyimpanan file dan log.
+- `tests/` — File pengujian.
+- `artisan` — Perintah CLI Laravel.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 7. Cara Menjalankan Program
+1. Clone repository dari GitHub.
+2. Masuk ke folder proyek.
+3. Jalankan `composer install`.
+4. Salin `.env.example` menjadi `.env`.
+5. Atur konfigurasi database pada file `.env`.
+6. Jalankan `php artisan key:generate`.
+7. Jalankan migration dengan `php artisan migrate`.
+8. Jalankan aplikasi menggunakan `php artisan serve`.
 
-```bash
-composer require laravel/boost --dev
+## 8. Kesimpulan
+ParkirKu merupakan sistem informasi yang dirancang untuk membantu proses pengelolaan parkir agar lebih efektif, terstruktur, dan mudah dipantau. Dengan adanya sistem ini, proses pencatatan kendaraan, transaksi, dan laporan parkir dapat dilakukan melalui satu aplikasi.
 
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+**Nama Proyek:** ParkirKu  
+**Jenis Aplikasi:** Sistem Informasi Parkir Berbasis Web  
+**Framework:** Laravel 13  
+**Database:** MySQL
