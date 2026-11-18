@@ -9,15 +9,22 @@ use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
-    // LAPORAN PARKIR ADMIN
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN PARKIR ADMIN DAN OWNER
+    |--------------------------------------------------------------------------
+    */
+
     public function index(Request $request)
     {
+        // Tanggal default
         $tanggalMulai = $request->tanggal_mulai
             ?? Carbon::now()->startOfMonth()->format('Y-m-d');
 
         $tanggalSelesai = $request->tanggal_selesai
             ?? Carbon::today()->format('Y-m-d');
 
+        // Mengambil data parkir yang sudah keluar
         $query = Parkir::with('kendaraan')
             ->where('status', 'keluar')
             ->whereDate('waktu_keluar', '>=', $tanggalMulai)
@@ -27,6 +34,46 @@ class LaporanController extends Controller
             ->orderBy('waktu_keluar', 'desc')
             ->get();
 
+        /*
+        |--------------------------------------------------------------------------
+        | MENGHITUNG DURASI PARKIR
+        |--------------------------------------------------------------------------
+        */
+
+        $parkirs->each(function ($parkir) {
+
+            if ($parkir->waktu_masuk && $parkir->waktu_keluar) {
+
+                $waktuMasuk = Carbon::parse($parkir->waktu_masuk);
+                $waktuKeluar = Carbon::parse($parkir->waktu_keluar);
+
+                // Selisih waktu dalam menit
+                $totalMenit = (int) $waktuMasuk->diffInMinutes(
+                    $waktuKeluar
+                );
+
+                // Mengubah menit menjadi jam dan menit
+                $jam = intdiv($totalMenit, 60);
+                $menit = $totalMenit % 60;
+
+                if ($jam > 0 && $menit > 0) {
+                    $durasi = $jam . ' jam ' . $menit . ' menit';
+                } elseif ($jam > 0) {
+                    $durasi = $jam . ' jam';
+                } else {
+                    $durasi = $menit . ' menit';
+                }
+
+                $parkir->durasi = $durasi;
+
+            } else {
+
+                $parkir->durasi = '-';
+
+            }
+
+        });
+
         return view('laporan.index', compact(
             'parkirs',
             'tanggalMulai',
@@ -34,7 +81,13 @@ class LaporanController extends Controller
         ));
     }
 
-    // REKAP TRANSAKSI KHUSUS OWNER
+
+    /*
+    |--------------------------------------------------------------------------
+    | REKAP TRANSAKSI KHUSUS OWNER
+    |--------------------------------------------------------------------------
+    */
+
     public function rekapTransaksi(Request $request)
     {
         $defaultMulai = Carbon::now()
@@ -49,6 +102,7 @@ class LaporanController extends Controller
                 'nullable',
                 'date_format:Y-m-d\TH:i',
             ],
+
             'tanggal_selesai' => [
                 'nullable',
                 'date_format:Y-m-d\TH:i',
@@ -62,7 +116,7 @@ class LaporanController extends Controller
         $waktuMulai = Carbon::parse($tanggalMulai)->startOfMinute();
         $waktuSelesai = Carbon::parse($tanggalSelesai)->endOfMinute();
 
-        // Hanya transaksi yang sudah lunas
+        // Hanya mengambil transaksi yang sudah lunas
         // Jika tanggal_transaksi kosong, gunakan created_at
         $query = Transaksi::with([
                 'parkir.kendaraan',
@@ -74,15 +128,17 @@ class LaporanController extends Controller
                 [$waktuMulai, $waktuSelesai]
             );
 
-        // Total transaksi pada periode
+        // Total transaksi
         $totalTransaksi = (clone $query)->count();
 
-        // Total pendapatan pada periode
+        // Total pendapatan
         $totalPendapatan = (clone $query)->sum('total_biaya');
 
         // Rincian transaksi
         $transaksis = $query
-            ->orderByRaw('COALESCE(tanggal_transaksi, created_at) DESC')
+            ->orderByRaw(
+                'COALESCE(tanggal_transaksi, created_at) DESC'
+            )
             ->paginate(15)
             ->withQueryString();
 
