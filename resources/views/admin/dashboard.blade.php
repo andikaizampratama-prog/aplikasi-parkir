@@ -6,192 +6,439 @@
 
 @push('styles')
 <style>
-    .welcome-banner {
-        background: linear-gradient(120deg, #1d4ed8, #2563eb, #3b82f6);
-        color: white;
-        border-radius: 18px;
-        padding: 28px 30px;
-        margin-bottom: 25px;
+    .admin-dashboard {
+        --dash-text: #172033;
+        --dash-muted: #8994a7;
+        color: var(--dash-text);
+    }
+
+    /* ANIMASI */
+    @keyframes dashReveal {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes softPulse {
+        0%, 100% { opacity: .65; }
+        50% { opacity: 1; }
+    }
+
+    @keyframes floatIcon {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    .dash-animate {
+        animation: dashReveal .65s cubic-bezier(.2,.7,.3,1) both;
+    }
+
+    .dash-delay-1 { animation-delay: .08s; }
+    .dash-delay-2 { animation-delay: .16s; }
+    .dash-delay-3 { animation-delay: .24s; }
+    .dash-delay-4 { animation-delay: .32s; }
+    .dash-delay-5 { animation-delay: .40s; }
+
+    /* WELCOME */
+    .dash-welcome {
         position: relative;
         overflow: hidden;
-        box-shadow: 0 8px 25px rgba(37,99,235,.16);
+        border-radius: 22px;
+        padding: 30px;
+        color: white;
+        background: linear-gradient(120deg, #111c3b, #1d4ed8 60%, #3b82f6);
+        box-shadow: 0 15px 40px rgba(37,99,235,.20);
+        margin-bottom: 26px;
     }
 
-    .welcome-banner::after {
-        content: "\F1B9";
-        font-family: "bootstrap-icons";
+    .dash-welcome::before,
+    .dash-welcome::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .dash-welcome::before {
+        width: 280px;
+        height: 280px;
+        background: rgba(255,255,255,.07);
+        right: -70px;
+        top: -130px;
+    }
+
+    .dash-welcome::after {
+        width: 180px;
+        height: 180px;
+        background: rgba(255,255,255,.05);
+        right: 100px;
+        bottom: -120px;
+    }
+
+    .dash-welcome-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .dash-welcome h3 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 9px;
+        letter-spacing: -.5px;
+    }
+
+    .dash-welcome p {
+        font-size: 13px;
+        margin-bottom: 0;
+        color: rgba(255,255,255,.8);
+    }
+
+    .dash-welcome-icon {
         position: absolute;
         right: 35px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 105px;
-        opacity: .13;
+        bottom: -18px;
+        font-size: 115px;
+        color: rgba(255,255,255,.10);
+        transform: rotate(-8deg);
+        transition: .4s ease;
     }
 
-    .welcome-banner h4 {
-        font-weight: 750;
-        margin-bottom: 8px;
+    .dash-welcome:hover .dash-welcome-icon {
+        transform: rotate(0deg) scale(1.08);
     }
 
-    .welcome-banner p {
-        margin: 0;
-        font-size: 13px;
-        opacity: .85;
+    .dash-date {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 18px;
+        padding: 8px 13px;
+        background: rgba(255,255,255,.12);
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 10px;
+        font-size: 12px;
+        backdrop-filter: blur(8px);
     }
 
-    .stat-card {
-        background: white;
-        border: 1px solid #e8edf4;
-        border-radius: 16px;
-        padding: 21px;
+    /* STATISTIK */
+    .dash-stat-card {
         height: 100%;
-        box-shadow: 0 4px 18px rgba(15,23,42,.035);
-        transition: transform .2s, box-shadow .2s;
+        min-height: 175px;
+        padding: 22px;
+        border-radius: 19px;
+        background: #fff;
+        border: 1px solid #edf0f5;
+        box-shadow: 0 5px 20px rgba(15,23,42,.035);
+        position: relative;
+        overflow: hidden;
+        transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
     }
 
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 9px 25px rgba(15,23,42,.08);
+    .dash-stat-card::after {
+        content: "";
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        right: -45px;
+        bottom: -50px;
+        background: var(--card-glow, rgba(59,130,246,.07));
+        transition: transform .4s ease;
     }
 
-    .stat-top {
+    .dash-stat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 32px rgba(15,23,42,.09);
+        border-color: var(--card-border, #dbeafe);
+    }
+
+    .dash-stat-card:hover::after {
+        transform: scale(2);
+    }
+
+    .dash-stat-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .dash-stat-icon {
+        width: 49px;
+        height: 49px;
+        border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 22px;
+        transition: transform .3s ease;
+    }
+
+    .dash-stat-card:hover .dash-stat-icon {
+        animation: floatIcon .8s ease;
+    }
+
+    .dash-stat-label {
+        font-size: 12px;
+        color: #8792a5;
+        font-weight: 700;
+        letter-spacing: .3px;
+    }
+
+    .dash-stat-number {
+        font-size: 30px;
+        font-weight: 850;
+        letter-spacing: -.8px;
+        margin-top: 20px;
+        margin-bottom: 5px;
+        color: var(--dash-text);
+        line-height: 1.2;
+        position: relative;
+        z-index: 1;
+    }
+
+    .dash-stat-description {
+        color: #9aa4b5;
+        font-size: 11px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .dash-stat-description i {
+        margin-right: 4px;
+    }
+
+    .stat-blue {
+        --card-glow: rgba(59,130,246,.1);
+        --card-border: #bfdbfe;
+    }
+
+    .stat-blue .dash-stat-icon {
+        background: #eff6ff;
+        color: #3b82f6;
+    }
+
+    .stat-green {
+        --card-glow: rgba(16,185,129,.1);
+        --card-border: #bbf7d0;
+    }
+
+    .stat-green .dash-stat-icon {
+        background: #ecfdf5;
+        color: #10b981;
+    }
+
+    .stat-purple {
+        --card-glow: rgba(139,92,246,.1);
+        --card-border: #ddd6fe;
+    }
+
+    .stat-purple .dash-stat-icon {
+        background: #f5f3ff;
+        color: #8b5cf6;
+    }
+
+    .stat-orange {
+        --card-glow: rgba(249,115,22,.1);
+        --card-border: #fed7aa;
+    }
+
+    .stat-orange .dash-stat-icon {
+        background: #fff7ed;
+        color: #f97316;
+    }
+
+    /* PANEL */
+    .dash-panel {
+        background: #fff;
+        border: 1px solid #edf0f5;
+        border-radius: 20px;
+        box-shadow: 0 5px 22px rgba(15,23,42,.035);
+        overflow: hidden;
+    }
+
+    .dash-panel-header {
+        padding: 22px 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 10px;
+        gap: 15px;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #f0f2f6;
     }
 
-    .stat-icon {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 13px;
-        font-size: 23px;
-    }
-
-    .icon-blue {
-        background: #dbeafe;
-        color: #2563eb;
-    }
-
-    .icon-green {
-        background: #dcfce7;
-        color: #16a34a;
-    }
-
-    .icon-purple {
-        background: #f3e8ff;
-        color: #9333ea;
-    }
-
-    .icon-orange {
-        background: #ffedd5;
-        color: #ea580c;
-    }
-
-    .stat-label {
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 600;
-        margin-top: 19px;
-        margin-bottom: 7px;
-    }
-
-    .stat-number {
-        color: #0f172a;
-        font-size: 27px;
-        font-weight: 800;
-        margin: 0;
-    }
-
-    .stat-description {
-        color: #94a3b8;
-        font-size: 11px;
-        margin-top: 5px;
-    }
-
-    .dashboard-card {
-        background: white;
-        border: 1px solid #e8edf4;
-        border-radius: 16px;
-        padding: 22px;
-        box-shadow: 0 4px 18px rgba(15,23,42,.035);
-    }
-
-    .dashboard-card-title {
+    .dash-panel-title {
         font-size: 16px;
-        font-weight: 750;
-        color: #1e293b;
+        font-weight: 800;
+        color: #202b40;
         margin: 0;
     }
 
-    .dashboard-card-subtitle {
-        color: #94a3b8;
+    .dash-panel-subtitle {
+        color: #98a2b3;
         font-size: 12px;
         margin-top: 5px;
     }
 
-    .status-badge {
-        padding: 6px 11px;
-        border-radius: 20px;
+    .dash-panel-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 13px;
+        border-radius: 30px;
+        background: #eff6ff;
+        color: #3b82f6;
         font-size: 11px;
         font-weight: 700;
-        display: inline-block;
     }
 
-    .status-masuk {
-        background: #dcfce7;
-        color: #15803d;
+    .dash-live-dot {
+        width: 7px;
+        height: 7px;
+        background: #3b82f6;
+        border-radius: 50%;
+        animation: softPulse 1.6s infinite;
     }
 
-    .status-keluar {
-        background: #e2e8f0;
-        color: #475569;
+    /* GRAFIK */
+    .dash-chart-wrapper {
+        position: relative;
+        height: 320px;
+        padding: 22px 24px 25px;
     }
 
-    .ticket-code {
-        color: #2563eb;
-        font-weight: 700;
+    /* TABEL */
+    .dash-table {
+        margin: 0;
+        min-width: 650px;
+    }
+
+    .dash-table thead th {
+        background: #f8fafc;
+        color: #8490a3;
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .7px;
+        padding: 14px 20px;
+        border-bottom: 1px solid #edf0f5;
+        white-space: nowrap;
+    }
+
+    .dash-table tbody td {
+        padding: 15px 20px;
+        vertical-align: middle;
         font-size: 12px;
+        border-bottom: 1px solid #f1f4f8;
     }
 
-    .empty-state {
-        padding: 35px 15px !important;
-        color: #94a3b8 !important;
+    .dash-table tbody tr {
+        transition: background .2s ease;
     }
 
-    .empty-state i {
+    .dash-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .dash-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .dash-ticket {
+        display: inline-block;
+        padding: 6px 10px;
+        background: #eff6ff;
+        border-radius: 8px;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .dash-plate {
+        color: #273449;
+        font-weight: 800;
+        letter-spacing: .4px;
+    }
+
+    .dash-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 11px;
+        border-radius: 30px;
+        font-size: 10px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .dash-status-in {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .dash-status-out {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .dash-empty {
+        padding: 45px 15px !important;
+        text-align: center;
+        color: #a0aabb;
+    }
+
+    .dash-empty i {
         display: block;
-        font-size: 35px;
+        font-size: 40px;
         margin-bottom: 10px;
     }
 
-    @media (max-width: 576px) {
-        .welcome-banner {
-            padding: 23px 20px;
+    /* RESPONSIVE */
+    @media(max-width:768px) {
+        .dash-welcome {
+            padding: 24px 20px;
+            border-radius: 17px;
         }
 
-        .welcome-banner::after {
-            right: 12px;
-            font-size: 75px;
+        .dash-welcome h3 {
+            font-size: 20px;
         }
 
-        .welcome-banner h4 {
-            font-size: 18px;
+        .dash-welcome-icon {
+            font-size: 80px;
+            right: 10px;
+            bottom: -10px;
         }
 
-        .stat-card {
-            padding: 17px;
+        .dash-stat-card {
+            padding: 18px;
+            min-height: 160px;
         }
 
-        .stat-number {
-            font-size: 23px;
+        .dash-stat-number {
+            font-size: 26px;
         }
 
-        .dashboard-card {
-            padding: 16px;
+        .dash-panel-header {
+            padding: 18px;
+        }
+
+        .dash-chart-wrapper {
+            height: 270px;
+            padding: 15px;
+        }
+    }
+
+    @media(prefers-reduced-motion: reduce) {
+        .admin-dashboard *,
+        .admin-dashboard *::before,
+        .admin-dashboard *::after {
+            animation: none !important;
+            transition: none !important;
         }
     }
 </style>
@@ -199,173 +446,193 @@
 
 @section('content')
 
-{{-- WELCOME --}}
-<div class="welcome-banner">
-    <h4>Selamat Datang, {{ auth()->user()->name }}!</h4>
-    <p>
-        <i class="bi bi-calendar3 me-1"></i>
-        {{ now()->translatedFormat('l, d F Y') }}
-        <span class="mx-2">|</span>
-        Anda masuk sebagai Administrator.
-    </p>
-</div>
+<div class="admin-dashboard">
 
-{{-- STATISTIK --}}
-<div class="row g-4">
+    {{-- WELCOME --}}
+    <div class="dash-welcome dash-animate">
+        <div class="dash-welcome-content">
+            <h3>Selamat Datang, {{ auth()->user()->name }}!</h3>
 
-    {{-- TOTAL KENDARAAN --}}
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-top">
-                <div>
-                    <div class="stat-label mt-0">Total Kendaraan</div>
-                </div>
-                <div class="stat-icon icon-blue">
-                    <i class="bi bi-car-front-fill"></i>
-                </div>
-            </div>
+            <p>
+                <i class="bi bi-shield-check me-1"></i>
+                Anda masuk ke panel Administrator Andika Parking.
+            </p>
 
-            <h2 class="stat-number">
-                {{ number_format($totalKendaraan, 0, ',', '.') }}
-            </h2>
-
-            <div class="stat-description">
-                <i class="bi bi-database me-1"></i>
-                Seluruh kendaraan terdaftar
-            </div>
-        </div>
-    </div>
-
-    {{-- PARKIR AKTIF --}}
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-top">
-                <div>
-                    <div class="stat-label mt-0">Parkir Aktif</div>
-                </div>
-                <div class="stat-icon icon-green">
-                    <i class="bi bi-p-square-fill"></i>
-                </div>
-            </div>
-
-            <h2 class="stat-number">
-                {{ number_format($parkirAktif, 0, ',', '.') }}
-            </h2>
-
-            <div class="stat-description">
-                <i class="bi bi-clock me-1"></i>
-                Kendaraan sedang parkir
-            </div>
-        </div>
-    </div>
-
-    {{-- TOTAL TRANSAKSI --}}
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-top">
-                <div>
-                    <div class="stat-label mt-0">Total Transaksi</div>
-                </div>
-                <div class="stat-icon icon-purple">
-                    <i class="bi bi-receipt-cutoff"></i>
-                </div>
-            </div>
-
-            <h2 class="stat-number">
-                {{ number_format($totalTransaksi, 0, ',', '.') }}
-            </h2>
-
-            <div class="stat-description">
-                <i class="bi bi-graph-up me-1"></i>
-                Seluruh transaksi tercatat
-            </div>
-        </div>
-    </div>
-
-    {{-- PENDAPATAN --}}
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-top">
-                <div>
-                    <div class="stat-label mt-0">Pendapatan Hari Ini</div>
-                </div>
-                <div class="stat-icon icon-orange">
-                    <i class="bi bi-wallet2"></i>
-                </div>
-            </div>
-
-            <h2 class="stat-number" style="font-size: 23px;">
-                Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}
-            </h2>
-
-            <div class="stat-description">
-                <i class="bi bi-calendar-check me-1"></i>
-                Pendapatan pada hari ini
-            </div>
-        </div>
-    </div>
-
-</div>
-
-{{-- TRANSAKSI TERBARU --}}
-<div class="dashboard-card mt-4">
-
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-
-        <div>
-            <h5 class="dashboard-card-title">
-                <i class="bi bi-clock-history text-primary me-2"></i>
-                Aktivitas Parkir Terbaru
-            </h5>
-
-            <div class="dashboard-card-subtitle">
-                Daftar kendaraan yang terakhir tercatat dalam sistem
+            <div class="dash-date">
+                <i class="bi bi-calendar3"></i>
+                {{ now()->translatedFormat('l, d F Y') }}
             </div>
         </div>
 
-        <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
-            <i class="bi bi-list-ul me-1"></i>
-            Data Terbaru
-        </span>
+        <i class="bi bi-car-front-fill dash-welcome-icon"></i>
+    </div>
+
+    {{-- STATISTIK --}}
+    <div class="row g-3 g-xl-4">
+
+        {{-- TOTAL KENDARAAN --}}
+        <div class="col-xl-3 col-sm-6 dash-animate dash-delay-1">
+            <div class="dash-stat-card stat-blue">
+                <div class="dash-stat-top">
+                    <span class="dash-stat-label">Total Kendaraan</span>
+                    <div class="dash-stat-icon">
+                        <i class="bi bi-car-front-fill"></i>
+                    </div>
+                </div>
+
+                <h2 class="dash-stat-number counter"
+                    data-target="{{ $totalKendaraan }}">0</h2>
+
+                <div class="dash-stat-description">
+                    <i class="bi bi-database"></i>
+                    Seluruh kendaraan terdaftar
+                </div>
+            </div>
+        </div>
+
+        {{-- PARKIR AKTIF --}}
+        <div class="col-xl-3 col-sm-6 dash-animate dash-delay-2">
+            <div class="dash-stat-card stat-green">
+                <div class="dash-stat-top">
+                    <span class="dash-stat-label">Parkir Aktif</span>
+                    <div class="dash-stat-icon">
+                        <i class="bi bi-p-square-fill"></i>
+                    </div>
+                </div>
+
+                <h2 class="dash-stat-number counter"
+                    data-target="{{ $parkirAktif }}">0</h2>
+
+                <div class="dash-stat-description">
+                    <i class="bi bi-clock"></i>
+                    Kendaraan sedang parkir
+                </div>
+            </div>
+        </div>
+
+        {{-- TOTAL TRANSAKSI --}}
+        <div class="col-xl-3 col-sm-6 dash-animate dash-delay-3">
+            <div class="dash-stat-card stat-purple">
+                <div class="dash-stat-top">
+                    <span class="dash-stat-label">Total Transaksi</span>
+                    <div class="dash-stat-icon">
+                        <i class="bi bi-receipt-cutoff"></i>
+                    </div>
+                </div>
+
+                <h2 class="dash-stat-number counter"
+                    data-target="{{ $totalTransaksi }}">0</h2>
+
+                <div class="dash-stat-description">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    Seluruh transaksi tercatat
+                </div>
+            </div>
+        </div>
+
+        {{-- PENDAPATAN HARI INI --}}
+        <div class="col-xl-3 col-sm-6 dash-animate dash-delay-4">
+            <div class="dash-stat-card stat-orange">
+                <div class="dash-stat-top">
+                    <span class="dash-stat-label">Pendapatan Hari Ini</span>
+                    <div class="dash-stat-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                </div>
+
+                <h2 class="dash-stat-number counter currency"
+                    data-target="{{ (int) $pendapatanHariIni }}">0</h2>
+
+                <div class="dash-stat-description">
+                    <i class="bi bi-calendar-check"></i>
+                    Pendapatan pada hari ini
+                </div>
+            </div>
+        </div>
 
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover">
+    {{-- GRAFIK PENDAPATAN 7 HARI --}}
+    <div class="dash-panel mt-4 dash-animate dash-delay-3">
 
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Kode Tiket</th>
-                    <th>Plat Nomor</th>
-                    <th>Waktu Masuk</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+        <div class="dash-panel-header">
+            <div>
+                <h5 class="dash-panel-title">
+                    <i class="bi bi-bar-chart-line text-primary me-2"></i>
+                    Grafik Pendapatan Parkir
+                </h5>
 
-            <tbody>
+                <div class="dash-panel-subtitle">
+                    Ringkasan pendapatan selama 7 hari terakhir
+                </div>
+            </div>
 
-                @forelse($parkirTerbaru as $index => $parkir)
+            <div class="dash-panel-tag">
+                <i class="bi bi-calendar-week"></i>
+                7 Hari Terakhir
+            </div>
+        </div>
 
+        <div class="dash-chart-wrapper">
+            <canvas id="grafikPendapatan"></canvas>
+        </div>
+
+    </div>
+
+    {{-- AKTIVITAS PARKIR --}}
+    <div class="dash-panel mt-4 dash-animate dash-delay-5">
+
+        <div class="dash-panel-header">
+            <div>
+                <h5 class="dash-panel-title">
+                    <i class="bi bi-activity text-primary me-2"></i>
+                    Aktivitas Parkir Terbaru
+                </h5>
+
+                <div class="dash-panel-subtitle">
+                    Riwayat kendaraan terbaru yang tercatat dalam sistem
+                </div>
+            </div>
+
+            <div class="dash-panel-tag">
+                <span class="dash-live-dot"></span>
+                Data Terbaru
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table dash-table">
+
+                <thead>
                     <tr>
-                        <td class="text-secondary">
-                            {{ $index + 1 }}
-                        </td>
+                        <th>No.</th>
+                        <th>Kode Tiket</th>
+                        <th>Plat Nomor</th>
+                        <th>Waktu Masuk</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse($parkirTerbaru as $index => $parkir)
+                    <tr>
+                        <td class="text-muted">{{ $index + 1 }}</td>
 
                         <td>
-                            <span class="ticket-code">
+                            <span class="dash-ticket">
                                 {{ $parkir->kode_tiket }}
                             </span>
                         </td>
 
                         <td>
-                            <span class="fw-semibold">
+                            <span class="dash-plate">
                                 {{ $parkir->kendaraan->plat_nomor ?? '-' }}
                             </span>
                         </td>
 
                         <td>
-                            <i class="bi bi-calendar-event text-secondary me-1"></i>
+                            <i class="bi bi-calendar-event text-muted me-1"></i>
+
                             {{ $parkir->waktu_masuk
                                 ? \Carbon\Carbon::parse($parkir->waktu_masuk)->format('d/m/Y H:i')
                                 : '-' }}
@@ -373,34 +640,193 @@
 
                         <td>
                             @if($parkir->status == 'masuk')
-                                <span class="status-badge status-masuk">
-                                    <i class="bi bi-circle-fill me-1" style="font-size:7px;"></i>
+                                <span class="dash-status dash-status-in">
+                                    <i class="bi bi-clock-fill"></i>
                                     Sedang Parkir
                                 </span>
                             @else
-                                <span class="status-badge status-keluar">
-                                    <i class="bi bi-check-circle-fill me-1"></i>
+                                <span class="dash-status dash-status-out">
+                                    <i class="bi bi-check-circle-fill"></i>
                                     Keluar
                                 </span>
                             @endif
                         </td>
                     </tr>
 
-                @empty
-
+                    @empty
                     <tr>
-                        <td colspan="5" class="text-center empty-state">
+                        <td colspan="5" class="dash-empty">
                             <i class="bi bi-inbox"></i>
                             Belum ada data parkir.
                         </td>
                     </tr>
+                    @endforelse
+                </tbody>
 
-                @endforelse
-
-            </tbody>
-        </table>
+            </table>
+        </div>
     </div>
 
 </div>
 
 @endsection
+
+@push('scripts')
+
+{{-- CHART.JS --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* ANIMASI ANGKA STATISTIK */
+    document.querySelectorAll('.admin-dashboard .counter').forEach(function (element) {
+
+        const target = Number(element.dataset.target) || 0;
+        const duration = 1100;
+        const startTime = performance.now();
+
+        function animateNumber(currentTime) {
+            const progress = Math.min((currentTime - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 4);
+            const value = Math.floor(target * eased);
+
+            if (element.classList.contains('currency')) {
+                element.innerHTML = 'Rp ' + value.toLocaleString('id-ID');
+            } else {
+                element.textContent = value.toLocaleString('id-ID');
+            }
+
+            if (progress < 1) {
+                requestAnimationFrame(animateNumber);
+            }
+        }
+
+        requestAnimationFrame(animateNumber);
+    });
+
+    /* GRAFIK PENDAPATAN 7 HARI */
+    const canvas = document.getElementById('grafikPendapatan');
+
+    if (canvas && typeof Chart !== 'undefined') {
+
+        const ctx = canvas.getContext('2d');
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.25)');
+        gradient.addColorStop(1, 'rgba(59, 130, 246, 0.01)');
+
+        const labels = @json($labels);
+        const dataPendapatan = @json($pendapatanGrafik);
+
+        new Chart(ctx, {
+            type: 'line',
+
+            data: {
+                labels: labels,
+
+                datasets: [{
+                    label: 'Pendapatan',
+                    data: dataPendapatan,
+
+                    borderColor: '#3b82f6',
+                    backgroundColor: gradient,
+
+                    borderWidth: 3,
+                    fill: true,
+
+                    tension: 0.4,
+
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#3b82f6',
+                    pointBorderWidth: 3
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+
+                animation: {
+                    duration: 1200,
+                    easing: 'easeOutQuart'
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        backgroundColor: '#172033',
+                        titleColor: '#ffffff',
+                        bodyColor: '#dbeafe',
+                        padding: 12,
+                        cornerRadius: 10,
+
+                        displayColors: false,
+
+                        callbacks: {
+                            label: function(context) {
+                                return 'Pendapatan: Rp ' +
+                                    Number(context.parsed.y).toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                },
+
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        },
+
+                        ticks: {
+                            color: '#8994a7',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+
+                        border: {
+                            display: false,
+                            dash: [5, 5]
+                        },
+
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.15)'
+                        },
+
+                        ticks: {
+                            color: '#8994a7',
+                            padding: 10,
+
+                            callback: function(value) {
+                                return 'Rp ' + Number(value).toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+});
+</script>
+@endpush

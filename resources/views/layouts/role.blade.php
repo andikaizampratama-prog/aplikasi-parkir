@@ -12,62 +12,180 @@
 
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --sidebar-bg: #111827;
-            --sidebar-hover: #1e293b;
-            --content-bg: #f1f5f9;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --sidebar-width: 265px;
+            --sidebar-bg: #101828;
+            --body-bg: #f4f7fc;
             --text-main: #1e293b;
-            --text-muted: #64748b;
-            --sidebar-width: 270px;
+            --text-muted: #8491a5;
+            --border-color: #e8edf5;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            background: var(--content-bg);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: var(--text-main);
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* SIDEBAR */
+        body {
+            margin: 0;
+            background: var(--body-bg);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* ==============================
+           ANIMATION GLOBAL
+        ============================== */
+
+        @keyframes pageEnter {
+            from {
+                opacity:  0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(-12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(.96) translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==============================
+           PAGE LOADER
+        ============================== */
+
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            background: rgba(244,247,252,.92);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .25s ease, visibility .25s ease;
+        }
+
+        .page-loader.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loader-logo {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #60a5fa, #2563eb, #1e40af);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            box-shadow: 0 12px 35px rgba(37,99,235,.25);
+            animation: popIn .4s ease;
+        }
+
+        .loader-spinner {
+            width: 25px;
+            height: 25px;
+            border: 3px solid #dbeafe;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        .loader-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: .4px;
+        }
+
+        /* ==============================
+           SIDEBAR
+        ============================== */
 
         .sidebar {
             position: fixed;
             inset: 0 auto 0 0;
             width: var(--sidebar-width);
             height: 100vh;
-            background: linear-gradient(180deg, #111827, #172554);
+            background:
+                radial-gradient(circle at top left, rgba(59,130,246,.13), transparent 35%),
+                linear-gradient(160deg, #101828, #111c32 60%, #101828);
             color: white;
-            padding: 22px 16px;
+            padding: 22px 15px;
             overflow-y: auto;
             z-index: 1050;
-            transition: transform .3s ease;
+            transition: transform .35s cubic-bezier(.22,1,.36,1);
+            scrollbar-width: thin;
+            scrollbar-color: #334155 transparent;
         }
 
         .brand {
             display: flex;
             align-items: center;
             gap: 13px;
-            padding: 5px 10px 25px;
-            border-bottom: 1px solid rgba(255,255,255,.1);
-            margin-bottom: 27px;
+            padding: 7px 10px 24px;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            margin-bottom: 25px;
         }
 
         .brand-icon {
-            width: 48px;
-            height: 48px;
+            width: 49px;
+            height: 49px;
             flex-shrink: 0;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            border-radius: 14px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 25px;
-            box-shadow: 0 5px 15px rgba(37,99,235,.3);
+            background: linear-gradient(135deg, #60a5fa, #2563eb, #1d4ed8);
+            box-shadow: 0 7px 24px rgba(37,99,235,.3);
+            transition: transform .3s, box-shadow .3s;
+        }
+
+        .brand:hover .brand-icon {
+            transform: rotate(-5deg) scale(1.07);
+            box-shadow: 0 10px 30px rgba(37,99,235,.45);
         }
 
         .brand h5 {
@@ -80,49 +198,96 @@
         .brand small {
             color: #94a3b8;
             font-size: 10px;
+            letter-spacing: .5px;
         }
 
         .sidebar-label {
             font-size: 10px;
-            font-weight: 700;
-            color: #64748b;
+            font-weight: 800;
+            color: #66758c;
             text-transform: uppercase;
-            letter-spacing: 1.4px;
+            letter-spacing: 1.5px;
             padding: 0 13px;
-            margin: 22px 0 12px;
+            margin: 22px 0 11px;
         }
 
         .sidebar .nav-link {
+            position: relative;
             display: flex;
             align-items: center;
             gap: 13px;
-            color: #cbd5e1;
+            color: #aebbd0;
             padding: 12px 14px;
-            margin-bottom: 6px;
-            border-radius: 11px;
+            margin-bottom: 5px;
+            border-radius: 12px;
             text-decoration: none;
-            transition: all .2s ease;
+            transition:
+                background .25s,
+                color .25s,
+                transform .25s,
+                box-shadow .25s;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 550;
+            overflow: hidden;
+        }
+
+        .sidebar .nav-link::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90, rgba(59,130,246,.09), transparent);
+            opacity: 0;
+            transition: opacity .25s;
         }
 
         .sidebar .nav-link i {
-            font-size: 18px;
+            position: relative;
             width: 22px;
             text-align: center;
+            font-size: 17px;
+            transition: transform .25s, color .25s;
+        }
+
+        .sidebar .nav-link span,
+        .sidebar .nav-link .badge {
+            position: relative;
         }
 
         .sidebar .nav-link:hover {
-            background: rgba(255,255,255,.08);
-            color: white;
-            transform: translateX(3px);
+            background: rgba(255,255,255,.055);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .sidebar .nav-link:hover::before {
+            opacity: 1;
+        }
+
+        .sidebar .nav-link:hover i {
+            transform: scale(1.12);
+            color: #60a5fa;
         }
 
         .sidebar .nav-link.active {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #fff;
+            background: linear-gradient(110deg, #2563eb, #3b82f6);
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(37,99,235,.22);
+        }
+
+        .sidebar .nav-link.active i {
             color: white;
-            font-weight: 600;
-            box-shadow: 0 5px 15px rgba(37,99,235,.25);
+        }
+
+        .sidebar .nav-link.active::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            width: 3px;
+            height: 22px;
+            border-radius: 5px 0 0 5px;
+            background: white;
+            opacity: .8;
         }
 
         .sidebar .nav-link .badge {
@@ -131,37 +296,48 @@
         }
 
         .logout-link {
-            color: #fca5a5 !important;
+            color: #fda4af !important;
             cursor: pointer;
+            transition: all .25s !important;
         }
 
         .logout-link:hover {
-            background: rgba(239,68,68,.15) !important;
+            background: rgba(239,68,68,.12) !important;
             color: #fecaca !important;
         }
 
-        /* MAIN */
+        .logout-link:hover i {
+            color: #fb7185 !important;
+        }
+
+        /* ==============================
+           MAIN WRAPPER
+        ============================== */
 
         .main-wrapper {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: margin .3s;
         }
 
-        /* TOPBAR */
+        /* ==============================
+           TOPBAR
+        ============================== */
 
         .topbar {
-            background: rgba(255,255,255,.96);
-            padding: 17px 30px;
+            background: rgba(255,255,255,.86);
+            padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid rgba(226,232,240,.8);
             position: sticky;
             top: 0;
             z-index: 900;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 3px 20px rgba(15,23,42,.025);
         }
 
         .topbar-left {
@@ -173,40 +349,49 @@
         .topbar h5 {
             margin: 0;
             font-size: 19px;
-            font-weight: 750;
-            color: #0f172a;
+            font-weight: 800;
+            color: #101828;
+            letter-spacing: -.3px;
         }
 
         .topbar small {
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .topbar-user {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 5px 12px 5px 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            background: #fff;
+            gap: 11px;
+            padding: 5px 8px 5px 12px;
+            border: 1px solid #e9edf4;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 3px 12px rgba(15,23,42,.025);
+            transition: box-shadow .25s, transform .25s;
+        }
+
+        .topbar-user:hover {
+            box-shadow: 0 5px 18px rgba(15,23,42,.06);
+            transform: translateY(-1px);
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: #dbeafe;
-            color: #1d4ed8;
-            border-radius: 12px;
+            width: 39px;
+            height: 39px;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #2563eb;
+            border-radius: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 19px;
+            flex-shrink: 0;
         }
 
         .user-name {
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 800;
             color: #1e293b;
         }
 
@@ -222,28 +407,76 @@
             color: #2563eb;
             width: 40px;
             height: 40px;
-            border-radius: 10px;
-            font-size: 21px;
+            border-radius: 12px;
+            font-size: 20px;
             display: none;
+            transition: all .2s;
         }
 
-        /* CONTENT */
+        .btn-sidebar:hover {
+            background: #dbeafe;
+            transform: scale(1.04);
+        }
+
+        /* ==============================
+           NOTIFICATION
+        ============================== */
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #edf0f5;
+            background: #f8fafc;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .25s;
+        }
+
+        .notification-btn:hover {
+            background: #eff6ff;
+            color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .dropdown-menu {
+            border: 1px solid #edf0f5 !important;
+            border-radius: 15px !important;
+            animation: popIn .22s ease both;
+            overflow: hidden;
+        }
+
+        .notification-item {
+            transition: background .2s;
+        }
+
+        .notification-item:hover {
+            background: #eff6ff !important;
+        }
+
+        /* ==============================
+           CONTENT
+        ============================== */
 
         .content {
             padding: 30px;
             flex: 1;
             min-width: 0;
+            animation: pageEnter .45s cubic-bezier(.22,1,.36,1) both;
         }
 
         .page-heading {
             margin-bottom: 25px;
+            animation: slideRight .4s ease both;
         }
 
         .page-heading h4 {
             font-size: 24px;
-            font-weight: 750;
+            font-weight: 800;
             margin-bottom: 6px;
-            color: #0f172a;
+            color: #101828;
+            letter-spacing: -.5px;
         }
 
         .page-heading p {
@@ -252,25 +485,37 @@
             font-size: 13px;
         }
 
-        /* CARD DAN TABEL */
+        /* ==============================
+           CARD
+        ============================== */
 
         .card {
-            border: 1px solid #e8edf4;
-            border-radius: 16px;
-            box-shadow: 0 4px 18px rgba(15,23,42,.035);
+            border: 1px solid #e9edf5;
+            border-radius: 17px;
+            box-shadow: 0 5px 24px rgba(15,23,42,.035);
             overflow: hidden;
+            background: #fff;
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 9px 30px rgba(15,23,42,.055);
         }
 
         .card-header {
-            background: #fff;
+            background: white;
             border-bottom: 1px solid #edf0f5;
             padding: 17px 20px;
-            font-weight: 700;
+            font-weight: 750;
         }
 
         .card-body {
             padding: 20px;
         }
+
+        /* ==============================
+           TABLE
+        ============================== */
 
         .table-responsive {
             border-radius: 12px;
@@ -282,13 +527,15 @@
         }
 
         .table thead th {
-            font-size: 12px;
+            font-size: 11px;
             color: #64748b;
-            font-weight: 700;
+            font-weight: 800;
             white-space: nowrap;
             background: #f8fafc;
             padding: 14px 15px;
             border-bottom: 1px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: .35px;
         }
 
         .table tbody td {
@@ -297,68 +544,106 @@
             color: #334155;
         }
 
-        .table tbody tr:hover {
-            background: #f8fbff;
+        .table tbody tr {
+            transition: background .2s;
         }
 
-        .btn {
-            border-radius: 9px;
-            font-weight: 600;
+        .table tbody tr:hover {
+            background: #f6f9ff;
         }
+
+        /* ==============================
+           BUTTONS
+        ============================== */
+
+        .btn {
+            border-radius: 10px;
+            font-weight: 650;
+            transition: transform .2s, box-shadow .2s, background .2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: scale(.96);
+        }
+
+        .btn-primary {
+            box-shadow: 0 3px 10px rgba(37,99,235,.12);
+        }
+
+        /* ==============================
+           FORM
+        ============================== */
 
         .form-control,
         .form-select {
-            border-radius: 10px;
+            border-radius: 11px;
             border-color: #dbe2ea;
             padding: 10px 13px;
             font-size: 13px;
+            transition: border-color .2s, box-shadow .2s, transform .2s;
         }
 
         .form-control:focus,
         .form-select:focus {
             border-color: #60a5fa;
-            box-shadow: 0 0 0 .2rem rgba(37,99,235,.12);
+            box-shadow: 0 0 0 .22rem rgba(37,99,235,.11);
         }
+
+        /* ==============================
+           ALERT
+        ============================== */
 
         .alert {
             border: none;
-            border-radius: 12px;
+            border-radius: 13px;
             font-size: 13px;
-            box-shadow: 0 3px 12px rgba(0,0,0,.03);
+            box-shadow: 0 4px 15px rgba(0,0,0,.025);
+            animation: popIn .35s ease both;
         }
 
-        /* FOOTER */
+        /* ==============================
+           FOOTER
+        ============================== */
 
         .app-footer {
             margin: 0 30px 25px;
             padding: 17px 22px;
-            background: white;
-            border: 1px solid #e8edf4;
-            border-radius: 14px;
+            background: rgba(255,255,255,.9);
+            border: 1px solid #e9edf5;
+            border-radius: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
-            font-size: 12px;
-            color: #64748b;
+            font-size: 11px;
+            color: #8491a5;
         }
 
         .app-footer strong {
             color: #2563eb;
         }
 
-        /* OVERLAY */
+        /* ==============================
+           MOBILE OVERLAY
+        ============================== */
 
         .sidebar-overlay {
             display: none;
         }
 
-        /* RESPONSIVE */
+        /* ==============================
+           RESPONSIVE
+        ============================== */
 
         @media (max-width: 992px) {
             .sidebar {
                 transform: translateX(-100%);
+                box-shadow: 15px 0 40px rgba(15,23,42,.15);
             }
 
             .sidebar.show {
@@ -379,9 +664,10 @@
                 display: block;
                 position: fixed;
                 inset: 0;
-                background: rgba(15,23,42,.55);
-                backdrop-filter: blur(2px);
+                background: rgba(15,23,42,.48);
+                backdrop-filter: blur(3px);
                 z-index: 1040;
+                animation: fadeIn .2s ease;
             }
 
             .content {
@@ -399,7 +685,7 @@
 
         @media (max-width: 576px) {
             .topbar {
-                padding: 12px 15px;
+                padding: 12px 14px;
             }
 
             .topbar h5 {
@@ -411,13 +697,13 @@
             }
 
             .topbar-user {
-                gap: 8px;
-                padding: 4px 7px;
+                gap: 7px;
+                padding: 4px 6px;
             }
 
             .user-name {
-                font-size: 11px;
-                max-width: 90px;
+                font-size: 10px;
+                max-width: 85px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -426,7 +712,7 @@
             .user-avatar {
                 width: 34px;
                 height: 34px;
-                font-size: 17px;
+                font-size: 16px;
             }
 
             .content {
@@ -443,8 +729,17 @@
 
             .app-footer {
                 margin: 0 15px 15px;
-                font-size: 11px;
-                padding: 14px;
+                font-size: 10px;
+                padding: 13px;
+            }
+        }
+
+        /* Kurangi animasi jika user memilih reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
@@ -453,6 +748,15 @@
 </head>
 
 <body>
+
+{{-- LOADING TRANSITION --}}
+<div class="page-loader" id="pageLoader">
+    <div class="loader-logo">
+        <i class="bi bi-car-front-fill"></i>
+    </div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Memuat Andika Parking...</div>
+</div>
 
 @php
     $role = auth()->user()->role ?? '';
@@ -471,7 +775,6 @@
         <div class="brand-icon">
             <i class="bi bi-car-front-fill"></i>
         </div>
-
         <div>
             <h5>Andika Parking</h5>
             <small>Parking Management System</small>
@@ -595,7 +898,6 @@
 
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-
             <button type="submit"
                     class="nav-link logout-link w-100 border-0 bg-transparent text-start"
                     onclick="return confirm('Apakah Anda yakin ingin logout?')">
@@ -612,143 +914,119 @@
 {{-- MAIN WRAPPER --}}
 <div class="main-wrapper">
 
-   
-{{-- HEADER --}}
-@php
-    $notifikasiTerbaru = \App\Models\Notifikasi::where('user_id', auth()->id())
-        ->latest()
-        ->take(5)
-        ->get();
+    {{-- HEADER --}}
+    @php
+        $notifikasiTerbaru = \App\Models\Notifikasi::where('user_id', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get();
 
-    $jumlahNotifikasi = \App\Models\Notifikasi::where('user_id', auth()->id())
-        ->where('dibaca', false)
-        ->count();
-@endphp
+        $jumlahNotifikasi = \App\Models\Notifikasi::where('user_id', auth()->id())
+            ->where('dibaca', false)
+            ->count();
+    @endphp
 
-<header class="topbar">
+    <header class="topbar">
 
-    <div class="topbar-left">
-
-        <button class="btn-sidebar" id="sidebarToggle" type="button">
-            <i class="bi bi-list"></i>
-        </button>
-
-        <div>
-            <h5>@yield('page-title', 'Dashboard')</h5>
-            <small>
-                <i class="bi bi-house-door me-1"></i>
-                Sistem Informasi Parkir Andika Parking
-            </small>
-        </div>
-
-    </div>
-
-    <div class="topbar-user">
-
-        {{-- NOTIFIKASI --}}
-        <div class="dropdown me-3">
-
-            <button
-                class="btn btn-light position-relative rounded-circle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                title="Notifikasi">
-
-                <i class="bi bi-bell fs-5"></i>
-
-                @if($jumlahNotifikasi > 0)
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{ $jumlahNotifikasi > 99 ? '99+' : $jumlahNotifikasi }}
-                    </span>
-                @endif
-
+        <div class="topbar-left">
+            <button class="btn-sidebar" id="sidebarToggle" type="button">
+                <i class="bi bi-list"></i>
             </button>
 
-            <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0"
-                 style="width: 320px; max-width: 90vw;">
+            <div>
+                <h5>@yield('page-title', 'Dashboard')</h5>
+                <small>
+                    <i class="bi bi-house-door me-1"></i>
+                    Sistem Informasi Parkir Andika Parking
+                </small>
+            </div>
+        </div>
 
-                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
-                    <strong>Notifikasi</strong>
+        <div class="topbar-user">
 
-                    <span class="badge bg-primary">
-                        {{ $jumlahNotifikasi }} Baru
-                    </span>
-                </div>
+            {{-- NOTIFIKASI --}}
+            <div class="dropdown me-2">
 
-                <div style="max-height: 350px; overflow-y: auto;">
+                <button class="btn notification-btn position-relative rounded-circle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        title="Notifikasi">
 
-                    @forelse($notifikasiTerbaru as $notifikasi)
+                    <i class="bi bi-bell fs-5"></i>
 
-                        <a href="{{ route('notifikasi.index') }}"
-                           class="dropdown-item p-3 border-bottom text-wrap
-                           {{ !$notifikasi->dibaca ? 'bg-light' : '' }}">
+                    @if($jumlahNotifikasi > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ $jumlahNotifikasi > 99 ? '99+' : $jumlahNotifikasi }}
+                        </span>
+                    @endif
+                </button>
 
-                            <div class="d-flex align-items-start gap-2">
+                <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0"
+                     style="width: 320px; max-width: 90vw;">
 
-                                <i class="bi bi-bell-fill text-primary mt-1"></i>
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <strong>Notifikasi</strong>
+                        <span class="badge bg-primary">{{ $jumlahNotifikasi }} Baru</span>
+                    </div>
 
-                                <div>
-                                    <strong class="d-block">
-                                        {{ $notifikasi->judul }}
-                                    </strong>
+                    <div style="max-height: 350px; overflow-y: auto;">
 
-                                    <small class="text-muted d-block">
-                                        {{ \Illuminate\Support\Str::limit($notifikasi->pesan, 90) }}
-                                    </small>
+                        @forelse($notifikasiTerbaru as $notifikasi)
 
-                                    <small class="text-secondary">
-                                        {{ $notifikasi->created_at->diffForHumans() }}
-                                    </small>
+                            <a href="{{ route('notifikasi.index') }}"
+                               class="dropdown-item notification-item p-3 border-bottom text-wrap
+                               {{ !$notifikasi->dibaca ? 'bg-light' : '' }}">
+
+                                <div class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-bell-fill text-primary mt-1"></i>
+
+                                    <div>
+                                        <strong class="d-block">{{ $notifikasi->judul }}</strong>
+                                        <small class="text-muted d-block">
+                                            {{ \Illuminate\Support\Str::limit($notifikasi->pesan, 90) }}
+                                        </small>
+                                        <small class="text-secondary">
+                                            {{ $notifikasi->created_at->diffForHumans() }}
+                                        </small>
+                                    </div>
                                 </div>
+                            </a>
 
+                        @empty
+
+                            <div class="text-center p-4">
+                                <i class="bi bi-bell-slash fs-2 text-muted"></i>
+                                <p class="mb-0 mt-2 text-muted">Belum ada notifikasi</p>
                             </div>
 
-                        </a>
+                        @endforelse
+                    </div>
 
-                    @empty
-
-                        <div class="text-center p-4">
-                            <i class="bi bi-bell-slash fs-2 text-muted"></i>
-                            <p class="mb-0 mt-2 text-muted">
-                                Belum ada notifikasi
-                            </p>
-                        </div>
-
-                    @endforelse
-
+                    <a href="{{ route('notifikasi.index') }}"
+                       class="dropdown-item text-center text-primary fw-semibold p-3 border-top">
+                        Lihat Semua Notifikasi
+                    </a>
                 </div>
+            </div>
 
-                <a href="{{ route('notifikasi.index') }}"
-                   class="dropdown-item text-center text-primary fw-semibold p-3 border-top">
+            {{-- INFORMASI PENGGUNA --}}
+            <div class="text-end">
+                <div class="user-name">
+                    {{ auth()->user()->name ?? 'Pengguna' }}
+                </div>
+                <div class="user-role">
+                    <i class="bi bi-shield-check me-1"></i>
+                    {{ ucfirst($role) }}
+                </div>
+            </div>
 
-                    Lihat Semua Notifikasi
-                </a>
-
+            <div class="user-avatar">
+                <i class="bi bi-person-fill"></i>
             </div>
 
         </div>
-
-        {{-- INFORMASI PENGGUNA --}}
-        <div class="text-end">
-            <div class="user-name">
-                {{ auth()->user()->name ?? 'Pengguna' }}
-            </div>
-
-            <div class="user-role">
-                <i class="bi bi-shield-check me-1"></i>
-                {{ ucfirst($role) }}
-            </div>
-        </div>
-
-        <div class="user-avatar">
-            <i class="bi bi-person-fill"></i>
-        </div>
-
-    </div>
-
-</header>
-
+    </header>
 
     {{-- CONTENT --}}
     <main class="content">
@@ -757,9 +1035,7 @@
             <div class="alert alert-success alert-dismissible fade show">
                 <i class="bi bi-check-circle-fill me-2"></i>
                 {{ session('success') }}
-
-                <button type="button" class="btn-close"
-                        data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
@@ -767,9 +1043,7 @@
             <div class="alert alert-danger alert-dismissible fade show">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 {{ session('error') }}
-
-                <button type="button" class="btn-close"
-                        data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
@@ -786,8 +1060,7 @@
                     @endforeach
                 </ul>
 
-                <button type="button" class="btn-close"
-                        data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
@@ -799,7 +1072,6 @@
 
     {{-- FOOTER --}}
     <footer class="app-footer">
-
         <div>
             <strong>
                 <i class="bi bi-car-front-fill me-1"></i>
@@ -811,7 +1083,6 @@
         <div>
             &copy; {{ date('Y') }} Andika Parking. All Rights Reserved.
         </div>
-
     </footer>
 
 </div>
@@ -822,20 +1093,26 @@
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     const toggle = document.getElementById('sidebarToggle');
+    const loader = document.getElementById('pageLoader');
 
+    // SIDEBAR MOBILE
     function closeSidebar() {
         sidebar.classList.remove('show');
         overlay.classList.remove('show');
     }
 
-    toggle.addEventListener('click', function () {
-        sidebar.classList.toggle('show');
-        overlay.classList.toggle('show');
-    });
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        });
+    }
 
-    overlay.addEventListener('click', closeSidebar);
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
 
-    document.querySelectorAll('.sidebar .nav-link').forEach(function (link) {
+    document.querySelectorAll('.sidebar a.nav-link').forEach(function (link) {
         link.addEventListener('click', function () {
             if (window.innerWidth <= 992) {
                 closeSidebar();
@@ -847,6 +1124,69 @@
         if (window.innerWidth > 992) {
             closeSidebar();
         }
+    });
+
+    // ANIMASI SAAT NAVIGASI MENU
+    document.querySelectorAll('a[href]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+
+            // Abaikan link tab, dropdown, anchor, atau link eksternal
+            const href = link.getAttribute('href');
+
+            if (
+                !href ||
+                href.startsWith('#') ||
+                link.target === '_blank' ||
+                link.hasAttribute('data-bs-toggle') ||
+                event.ctrlKey ||
+                event.shiftKey ||
+                event.altKey ||
+                event.metaKey
+            ) {
+                return;
+            }
+
+            // Hanya animasikan navigasi halaman internal
+            let url;
+
+            try {
+                url = new URL(href, window.location.href);
+            } catch (e) {
+                return;
+            }
+
+            if (url.origin !== window.location.origin) {
+                return;
+            }
+
+            // Jangan tampilkan loading untuk link halaman yang sama
+            if (url.href === window.location.href) {
+                return;
+            }
+
+            loader.classList.add('show');
+        });
+    });
+
+    // ANIMASI FORM SAAT SUBMIT
+    document.querySelectorAll('form').forEach(function (form) {
+        form.addEventListener('submit', function () {
+
+            // Form logout tetap memakai konfirmasi
+            const submitButton = form.querySelector('[type="submit"]');
+
+            if (submitButton && submitButton.classList.contains('logout-link')) {
+                return;
+            }
+
+            // Tampilkan loading setelah form dikirim
+            loader.classList.add('show');
+        });
+    });
+
+    // Kembali dari browser: pastikan loader tidak tertinggal
+    window.addEventListener('pageshow', function () {
+        loader.classList.remove('show');
     });
 </script>
 
