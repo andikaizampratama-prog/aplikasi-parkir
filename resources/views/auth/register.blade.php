@@ -34,11 +34,16 @@
 
 <div class="register-card">
 
-    <h2 class="text-center text-primary fw-bold">ParkirKu</h2>
+   <h2 class="text-center text-primary fw-bold">ParkirKu</h2>
 
-    <p class="text-center text-secondary mb-4">
-        Buat Akun Baru
-    </p>
+<p class="text-center text-secondary mb-2">
+    Registrasi Akun Owner
+</p>
+
+<div class="alert alert-info text-center small">
+    <i class="bi bi-shield-check me-1"></i>
+    Akun yang didaftarkan akan memiliki role Owner.
+</div>
 
     @if($errors->any())
         <div class="alert alert-danger">

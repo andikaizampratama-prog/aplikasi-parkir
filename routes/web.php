@@ -13,6 +13,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ValidasiController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\LogAktivitasController;
+use App\Http\Controllers\AreaParkirController;
 use App\Http\Controllers\Admin\UserController;
 
 /*
@@ -111,6 +112,11 @@ Route::prefix('admin')
 
         // Data Kendaraan
         Route::resource('kendaraan', KendaraanController::class);
+
+        // CRUD Area Parkir
+        Route::resource('area-parkir', AreaParkirController::class)
+            ->parameters(['area-parkir' => 'areaParkir'])
+            ->names('area-parkir');
 
         // Data Parkir
         Route::resource('parkir', ParkirController::class);

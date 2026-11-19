@@ -38,13 +38,11 @@
             overflow-x: hidden;
         }
 
-        /* ==============================
-           ANIMATION GLOBAL
-        ============================== */
+        /* ANIMATION GLOBAL */
 
         @keyframes pageEnter {
             from {
-                opacity:  0;
+                opacity: 0;
                 transform: translateY(15px);
             }
             to {
@@ -55,7 +53,7 @@
 
         @keyframes fadeIn {
             from { opacity: 0; }
-            to   { opacity: 1; }
+            to { opacity: 1; }
         }
 
         @keyframes slideRight {
@@ -84,9 +82,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ==============================
-           PAGE LOADER
-        ============================== */
+        /* PAGE LOADER */
 
         .page-loader {
             position: fixed;
@@ -139,9 +135,7 @@
             letter-spacing: .4px;
         }
 
-        /* ==============================
-           SIDEBAR
-        ============================== */
+        /* SIDEBAR */
 
         .sidebar {
             position: fixed;
@@ -235,7 +229,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(90, rgba(59,130,246,.09), transparent);
+            background: linear-gradient(90deg, rgba(59,130,246,.09), transparent);
             opacity: 0;
             transition: opacity .25s;
         }
@@ -310,9 +304,7 @@
             color: #fb7185 !important;
         }
 
-        /* ==============================
-           MAIN WRAPPER
-        ============================== */
+        /* MAIN WRAPPER */
 
         .main-wrapper {
             margin-left: var(--sidebar-width);
@@ -322,9 +314,7 @@
             transition: margin .3s;
         }
 
-        /* ==============================
-           TOPBAR
-        ============================== */
+        /* TOPBAR */
 
         .topbar {
             background: rgba(255,255,255,.86);
@@ -418,9 +408,7 @@
             transform: scale(1.04);
         }
 
-        /* ==============================
-           NOTIFICATION
-        ============================== */
+        /* NOTIFICATION */
 
         .notification-btn {
             width: 40px;
@@ -455,9 +443,7 @@
             background: #eff6ff !important;
         }
 
-        /* ==============================
-           CONTENT
-        ============================== */
+        /* CONTENT */
 
         .content {
             padding: 30px;
@@ -485,9 +471,7 @@
             font-size: 13px;
         }
 
-        /* ==============================
-           CARD
-        ============================== */
+        /* CARD */
 
         .card {
             border: 1px solid #e9edf5;
@@ -513,9 +497,7 @@
             padding: 20px;
         }
 
-        /* ==============================
-           TABLE
-        ============================== */
+        /* TABLE */
 
         .table-responsive {
             border-radius: 12px;
@@ -552,9 +534,7 @@
             background: #f6f9ff;
         }
 
-        /* ==============================
-           BUTTONS
-        ============================== */
+        /* BUTTONS */
 
         .btn {
             border-radius: 10px;
@@ -574,9 +554,7 @@
             box-shadow: 0 3px 10px rgba(37,99,235,.12);
         }
 
-        /* ==============================
-           FORM
-        ============================== */
+        /* FORM */
 
         .form-control,
         .form-select {
@@ -593,9 +571,7 @@
             box-shadow: 0 0 0 .22rem rgba(37,99,235,.11);
         }
 
-        /* ==============================
-           ALERT
-        ============================== */
+        /* ALERT */
 
         .alert {
             border: none;
@@ -605,9 +581,7 @@
             animation: popIn .35s ease both;
         }
 
-        /* ==============================
-           FOOTER
-        ============================== */
+        /* FOOTER */
 
         .app-footer {
             margin: 0 30px 25px;
@@ -628,17 +602,13 @@
             color: #2563eb;
         }
 
-        /* ==============================
-           MOBILE OVERLAY
-        ============================== */
+        /* MOBILE OVERLAY */
 
         .sidebar-overlay {
             display: none;
         }
 
-        /* ==============================
-           RESPONSIVE
-        ============================== */
+        /* RESPONSIVE */
 
         @media (max-width: 992px) {
             .sidebar {
@@ -734,7 +704,8 @@
             }
         }
 
-        /* Kurangi animasi jika user memilih reduced motion */
+        /* REDUCED MOTION */
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: .01ms !important;
@@ -804,6 +775,13 @@
                class="nav-link {{ request()->routeIs('admin.kendaraan.*') ? 'active' : '' }}">
                 <i class="bi bi-car-front-fill"></i>
                 <span>Data Kendaraan</span>
+            </a>
+
+            {{-- MENU AREA PARKIR --}}
+            <a href="{{ route('admin.area-parkir.index') }}"
+               class="nav-link {{ request()->routeIs('admin.area-parkir.*') ? 'active' : '' }}">
+                <i class="bi bi-grid-fill"></i>
+                <span>Area Parkir</span>
             </a>
 
             <a href="{{ route('admin.parkir.index') }}"
@@ -1130,7 +1108,6 @@
     document.querySelectorAll('a[href]').forEach(function (link) {
         link.addEventListener('click', function (event) {
 
-            // Abaikan link tab, dropdown, anchor, atau link eksternal
             const href = link.getAttribute('href');
 
             if (
@@ -1146,7 +1123,6 @@
                 return;
             }
 
-            // Hanya animasikan navigasi halaman internal
             let url;
 
             try {
@@ -1159,7 +1135,6 @@
                 return;
             }
 
-            // Jangan tampilkan loading untuk link halaman yang sama
             if (url.href === window.location.href) {
                 return;
             }
@@ -1172,19 +1147,17 @@
     document.querySelectorAll('form').forEach(function (form) {
         form.addEventListener('submit', function () {
 
-            // Form logout tetap memakai konfirmasi
             const submitButton = form.querySelector('[type="submit"]');
 
             if (submitButton && submitButton.classList.contains('logout-link')) {
                 return;
             }
 
-            // Tampilkan loading setelah form dikirim
             loader.classList.add('show');
         });
     });
 
-    // Kembali dari browser: pastikan loader tidak tertinggal
+    // KEMBALI DARI BROWSER
     window.addEventListener('pageshow', function () {
         loader.classList.remove('show');
     });

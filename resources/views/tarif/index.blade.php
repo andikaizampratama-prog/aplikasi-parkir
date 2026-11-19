@@ -280,7 +280,7 @@
                         </div>
 
                         <div>
-                            <h5 class="fw-bold mb-1">Tarif Motor</h5>
+                            <h5 class="fw-bold mb-1">Tarif Roda Dua</h5>
                             <span class="badge bg-primary-subtle text-primary rounded-pill">
                                 Kendaraan roda dua
                             </span>
@@ -361,7 +361,7 @@
                         </div>
 
                         <div>
-                            <h5 class="fw-bold mb-1">Tarif Mobil</h5>
+                            <h5 class="fw-bold mb-1">Tari Roda Empat</h5>
                             <span class="badge bg-info-subtle text-info rounded-pill">
                                 Kendaraan roda empat
                             </span>

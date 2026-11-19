@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,6 +23,27 @@ class AuthController extends Controller
 
     /*
     |--------------------------------------------------------------------------
+    | MENCATAT LOG AKTIVITAS
+    |--------------------------------------------------------------------------
+    */
+
+    private function catatAktivitas(
+        User $user,
+        string $aktivitas,
+        string $deskripsi,
+        Request $request
+    ): void {
+        LogAktivitas::create([
+            'user_id' => $user->id,
+            'aktivitas' => $aktivitas,
+            'deskripsi' => $deskripsi,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | PROSES LOGIN
     |--------------------------------------------------------------------------
     */
@@ -29,42 +51,58 @@ class AuthController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
+            return back()
+                ->withErrors([
+                    'email' => 'Email atau password yang Anda masukkan salah.',
+                ])
+                ->onlyInput('email');
+        }
 
-            $request->session()->regenerate();
+        $request->session()->regenerate();
 
-            $user = Auth::user();
+        $user = Auth::user();
 
-            // Dashboard sesuai role
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-
-            if ($user->role === 'petugas') {
-                return redirect()->route('petugas.dashboard');
-            }
-
-            if ($user->role === 'owner') {
-                return redirect()->route('owner.dashboard');
-            }
-
+        // Periksa role akun
+        if (!in_array($user->role, ['admin', 'petugas', 'owner'])) {
             Auth::logout();
 
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('login')
+            return redirect()
+                ->route('login')
                 ->with('error', 'Role akun tidak dikenali.');
         }
 
-        // Jika email atau password salah
-        return back()
-            ->withInput($request->only('email'))
-            ->with('error', 'Email atau password salah. Silakan periksa kembali.');
+        // Catat aktivitas login
+        $this->catatAktivitas(
+            $user,
+            'Login',
+            $user->name . ' berhasil login sebagai ' . ucfirst($user->role),
+            $request
+        );
+
+        // Redirect berdasarkan role
+        if ($user->role === 'admin') {
+            return redirect()
+                ->route('admin.dashboard')
+                ->with('success', 'Selamat datang Admin!');
+        }
+
+        if ($user->role === 'petugas') {
+            return redirect()
+                ->route('petugas.dashboard')
+                ->with('success', 'Selamat datang Petugas!');
+        }
+
+        return redirect()
+            ->route('owner.dashboard')
+            ->with('success', 'Selamat datang Owner!');
     }
 
     /*
@@ -80,45 +118,67 @@ class AuthController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | PROSES REGISTER
+    | PROSES REGISTER OWNER
     |--------------------------------------------------------------------------
     */
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'min:8', 'confirmed'],
         ]);
 
-        // Registrasi umum hanya sebagai Petugas
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'petugas',
+        // Membuat akun Owner
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'owner',
         ]);
 
-        // Tidak login otomatis
-        return redirect()->route('login')
-            ->with('success', 'Registrasi berhasil! Silakan login menggunakan akun Anda.');
+        // Catat aktivitas registrasi
+        $this->catatAktivitas(
+            $user,
+            'Registrasi Owner',
+            'Akun Owner baru berhasil didaftarkan: ' . $user->name,
+            $request
+        );
+
+        return redirect()
+            ->route('login')
+            ->with('success', 'Registrasi Owner berhasil! Silakan login.');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | LOGOUT
+    | PROSES LOGOUT
     |--------------------------------------------------------------------------
     */
 
     public function logout(Request $request)
     {
+        // Ambil data pengguna sebelum logout
+        $user = Auth::user();
+
+        if ($user) {
+            // Catat aktivitas logout sebelum sesi dihapus
+            $this->catatAktivitas(
+                $user,
+                'Logout',
+                $user->name . ' berhasil logout sebagai ' . ucfirst($user->role),
+                $request
+            );
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')
+        return redirect()
+            ->route('login')
             ->with('success', 'Anda berhasil logout.');
     }
 }
