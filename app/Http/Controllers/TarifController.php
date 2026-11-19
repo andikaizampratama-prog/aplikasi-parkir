@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class TarifController extends Controller
 {
+    // Menampilkan halaman pengaturan tarif
     public function index()
     {
         $motor = Tarif::firstOrCreate(
@@ -22,24 +23,23 @@ class TarifController extends Controller
         return view('tarif.index', compact('motor', 'mobil'));
     }
 
-    public function update(Request $request)
+    // Memperbarui satu tarif berdasarkan ID
+    public function update(Request $request, Tarif $tarif)
     {
-        $request->validate([
-            'motor' => 'required|numeric|min:0',
-            'mobil' => 'required|numeric|min:0',
+        $data = $request->validate([
+            'tarif_per_jam' => 'required|numeric|min:0',
+        ], [
+            'tarif_per_jam.required' => 'Tarif wajib diisi.',
+            'tarif_per_jam.numeric' => 'Tarif harus berupa angka.',
+            'tarif_per_jam.min' => 'Tarif tidak boleh kurang dari 0.',
         ]);
 
-        Tarif::updateOrCreate(
-            ['jenis' => 'motor'],
-            ['tarif_per_jam' => $request->motor]
-        );
+        // Hanya memperbarui tarif yang dipilih
+        $tarif->tarif_per_jam = $data['tarif_per_jam'];
+        $tarif->save();
 
-        Tarif::updateOrCreate(
-            ['jenis' => 'mobil'],
-            ['tarif_per_jam' => $request->mobil]
-        );
-
-        return redirect()->route('tarif.index')
-            ->with('success', 'Tarif parkir berhasil diperbarui.');
+        return redirect()
+            ->route('admin.tarif.index')
+            ->with('success', 'Tarif ' . ucfirst($tarif->jenis) . ' berhasil diperbarui.');
     }
 }
